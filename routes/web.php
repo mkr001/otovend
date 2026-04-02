@@ -16,6 +16,19 @@ Route::get('set-language/{lang}', function ($lang) {
     return back();
 })->name('set-language');
 
+// Temporary Install Route for Free Render Tier
+Route::get('/install', function () {
+    try {
+        \Illuminate\Support\Facades\Artisan::call('migrate:fresh', [
+            '--force' => true,
+            '--seed' => true
+        ]);
+        return "<h1>Database successfully installed and seeded!</h1><p>You can now go back to the <a href='/'>Homepage</a>.</p>";
+    } catch (\Exception $e) {
+        return "<h1>Error installing database:</h1><p>" . $e->getMessage() . "</p>";
+    }
+});
+
 // Public Routes
 Route::get('/', [ProductController::class, 'index'])->name('home');
 Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
